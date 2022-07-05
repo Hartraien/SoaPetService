@@ -1,0 +1,52 @@
+version: "3"
+services:
+  discovery:
+    build: ./DiscoveryService/.
+    container_name: discovery
+    restart: on-failure
+    ports:
+      - "8761"
+    environment:
+      eureka.instance.hostname: discovery
+    networks:
+      - local-network
+  gateway:
+    build: ./GatewayService/.
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - discovery
+    environment:
+      eureka.client.service-url.defaultZone: http://discovery:8761/eureka/
+    networks:
+      - local-network
+  pet-service:
+    build: ./PetService/.
+    container_name: pet-service
+    ports:
+      - "8080"
+    restart: on-failure
+    depends_on:
+      - discovery
+      - gateway
+      - postgresSql
+    environment:
+      eureka.client.service-url.defaultZone: http://discovery:8761/eureka/
+    networks:
+      - local-network
+  postgresSql:
+    image: 'postgres:14.2-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_DB=db_spring_storage
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
+    ports:
+      - "5432"
+    restart: on-failure
+    networks:
+      - local-network
+networks:
+  local-network:

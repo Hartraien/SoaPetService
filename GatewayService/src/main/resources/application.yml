@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: gateway-service
+
+server:
+  port: 8080
+
+eureka:
+  instance:
+    nonSecurePortEnabled: true
+    nonSecurePort: ${server.port}
+    preferIpAddress: true
+  #    hostname: <your_client_host> # or you can use preferIpAddress: true
+  #    homePageUrl: http://${eureka.instance.hostname}/
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+

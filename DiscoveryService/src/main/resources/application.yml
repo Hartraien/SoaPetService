@@ -1,0 +1,16 @@
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}/eureka/
+  instance:
+    nonSecurePortEnabled: true
+    nonSecurePort: 8761
+    homePageUrl: http://${eureka.instance.hostname}:${eureka.instance.nonSecurePort}/
+    statusPageUrl: http://${eureka.instance.hostname}/actuator/info/
+    healthCheckUrl: http://${eureka.instance.hostname}/actuator/health/
+    hostname: localhost
+
+server:
+  port: 8761
