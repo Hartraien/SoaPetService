@@ -18,6 +18,7 @@
         <module>GatewayService</module>
         <module>PetService</module>
         <module>DiscoveryService</module>
+        <module>AuthService</module>
     </modules>
 
 </project>

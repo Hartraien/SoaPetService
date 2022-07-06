@@ -30,9 +30,6 @@ public class GatewayServiceApplication {
                 .route(p -> p
                         .path("/pets", "/pets/**")
                         .uri("lb://pet-service"))
-                .route(p -> p
-                        .path("/eureka")
-                        .uri("http://discovery:8761"))
                 .build();
     }
 
