@@ -11,7 +11,7 @@ import ru.hartraien.authservice.Exceptions.AuthConnectionException;
 import ru.hartraien.authservice.Exceptions.AuthServiceException;
 import ru.hartraien.authservice.Exceptions.UserServiceFailedInputException;
 import ru.hartraien.authservice.Service.AuthService;
-import ru.hartraien.authservice.Service.AuthTokenException;
+import ru.hartraien.authservice.Exceptions.AuthTokenInvalidException;
 
 @RestController
 public class AuthController {
@@ -34,12 +34,12 @@ public class AuthController {
     }
 
     @GetMapping("refreshToken")
-    public ResponseEntity<TokenResponse> refreshToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenException, AuthConnectionException, UserServiceFailedInputException {
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
         return ResponseEntity.ok(authService.refreshToken(tokenRequest));
     }
 
     @PostMapping("verifyToken")
-    public ResponseEntity<?> verifyToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenException, AuthConnectionException, UserServiceFailedInputException {
+    public ResponseEntity<?> verifyToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
         authService.verifyToken(tokenRequest);
         return ResponseEntity.ok().build();
     }

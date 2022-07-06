@@ -51,17 +51,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenResponse refreshToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenException {
+    public TokenResponse refreshToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
         UserServiceResponse userServiceResponse = getUserServiceResponse(tokenRequest);
         return generateTokenForUser(userServiceResponse);
     }
 
     @Override
-    public void verifyToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenException {
+    public void verifyToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
         getUserServiceResponse(tokenRequest);
     }
 
-    private UserServiceResponse getUserServiceResponse(TokenRequest tokenRequest) throws UserServiceFailedInputException, AuthServiceException, AuthConnectionException, AuthTokenException {
+    private UserServiceResponse getUserServiceResponse(TokenRequest tokenRequest) throws UserServiceFailedInputException, AuthServiceException, AuthConnectionException, AuthTokenInvalidException {
         String token = tokenRequest.getToken();
         if(jwtUtil.validateToken(token)){
         long id = jwtUtil.getIdFromToken(token);
@@ -74,6 +74,6 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthConnectionException("Could not register user due to inner failure, try again later", e);
         }}
         else
-            throw new AuthTokenException("Invalid Token");
+            throw new AuthTokenInvalidException("Invalid Token");
     }
 }
