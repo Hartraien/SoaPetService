@@ -19,6 +19,7 @@
         <module>PetService</module>
         <module>DiscoveryService</module>
         <module>AuthService</module>
+        <module>UserService</module>
     </modules>
 
 </project>

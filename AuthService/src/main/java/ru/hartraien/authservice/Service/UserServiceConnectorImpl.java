@@ -74,6 +74,11 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
         UsernameAndPasswordDTO usernameAndPasswordDTO = new UsernameAndPasswordDTO();
         usernameAndPasswordDTO.setUsername(username);
 
-        return getUserServiceResponse(url, usernameAndPasswordDTO);
+        UserServiceResponse userServiceResponse = getUserServiceResponse(url, usernameAndPasswordDTO);
+
+        if(id != userServiceResponse.getId())
+            throw new UserServiceFailedInputException("Id's do not match");
+
+        return userServiceResponse;
     }
 }

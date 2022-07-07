@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: user-service
+
+server:
+  port: 8080
+
+eureka:
+  instance:
+    nonSecurePortEnabled: true
+    nonSecurePort: ${server.port}
+    preferIpAddress: true
+
