@@ -39,9 +39,9 @@ public class AuthController {
     }
 
     @PostMapping("verifyToken")
-    public ResponseEntity<?> verifyToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
-        authService.verifyToken(tokenRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserServiceResponse> verifyToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
+        UserServiceResponse userServiceResponse = authService.verifyToken(tokenRequest);
+        return ResponseEntity.ok(userServiceResponse);
     }
 
 

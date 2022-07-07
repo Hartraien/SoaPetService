@@ -7,7 +7,7 @@ services:
     ports:
       - "8761"
     environment:
-      eureka.instance.hostname: discovery
+      - eureka.instance.hostname=discovery
     networks:
       - local-network
   gateway:
@@ -19,7 +19,7 @@ services:
     depends_on:
       - discovery
     environment:
-      eureka.client.service-url.defaultZone: http://discovery:8761/eureka/
+      - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
     networks:
       - local-network
   pet-service:
@@ -33,7 +33,45 @@ services:
       - gateway
       - postgresSql
     environment:
-      eureka.client.service-url.defaultZone: http://discovery:8761/eureka/
+      - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
+      - spring.datasource.url=jdbc:postgresql://db:5432/db_spring_storage
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.datasource.username=compose-postgres
+      - spring.datasource.password=compose-postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+    networks:
+      - local-network
+  auth-service:
+    build: ./AuthService/.
+    container_name: auth-service
+    ports:
+      - "8080"
+    restart: on-failure
+    depends_on:
+      - discovery
+      - gateway
+      - user-service
+    environment:
+      - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
+    networks:
+      - local-network
+  user-service:
+    build: ./UserService/.
+    container_name: user-service
+    ports:
+      - "8080"
+    restart: on-failure
+    depends_on:
+      - discovery
+      - gateway
+      - postgresSql
+    environment:
+      - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
+      - spring.datasource.url=jdbc:postgresql://db:5432/db_spring_storage
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.datasource.username=compose-postgres
+      - spring.datasource.password=compose-postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
     networks:
       - local-network
   postgresSql:

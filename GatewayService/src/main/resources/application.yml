@@ -10,9 +10,11 @@ eureka:
     nonSecurePortEnabled: true
     nonSecurePort: ${server.port}
     preferIpAddress: true
-  #    hostname: <your_client_host> # or you can use preferIpAddress: true
-  #    homePageUrl: http://${eureka.instance.hostname}/
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka/
+
+authorization:
+  header-key: "Authorization"
+
+services:
+  auth-service-url: lb://auth-service
+  pet-service-url: lb://pet-service
 

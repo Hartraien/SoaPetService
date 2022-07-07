@@ -1,6 +1,7 @@
 package ru.hartraien.authservice.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.hartraien.authservice.DTOs.*;
 import ru.hartraien.authservice.Exceptions.*;
@@ -11,6 +12,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     private final UserServiceConnector userServiceConnector;
+
+    @Value("${authorization.header-key}")
+    private String authorizationHeader;
 
     @Autowired
     public AuthServiceImpl(JwtUtil jwtUtil, UserServiceConnector userServiceConnector) {
@@ -47,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
         String username = userServiceResponse.getUsername();
         String accessToken = jwtUtil.generateToken(id, username, "ACCESS");
         String refreshToken = jwtUtil.generateToken(id, username, "REFRESH");
-        return new TokenResponse(accessToken, refreshToken, "Bearer");
+        return new TokenResponse(accessToken, refreshToken, authorizationHeader);
     }
 
     @Override
@@ -57,8 +61,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void verifyToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
-        getUserServiceResponse(tokenRequest);
+    public UserServiceResponse verifyToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
+        return getUserServiceResponse(tokenRequest);
     }
 
     private UserServiceResponse getUserServiceResponse(TokenRequest tokenRequest) throws UserServiceFailedInputException, AuthServiceException, AuthConnectionException, AuthTokenInvalidException {
