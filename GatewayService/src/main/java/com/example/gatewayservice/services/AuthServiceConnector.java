@@ -1,8 +1,8 @@
 package com.example.gatewayservice.services;
 
-import com.example.gatewayservice.exceptions.AuthServiceException;
 import com.example.gatewayservice.DTOs.AuthServiceResponse;
+import reactor.core.publisher.Mono;
 
 public interface AuthServiceConnector {
-    AuthServiceResponse getInfoFromToken(String token) throws AuthServiceException;
+    Mono<AuthServiceResponse> getInfoFromToken(String token);
 }

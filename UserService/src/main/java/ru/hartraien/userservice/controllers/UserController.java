@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.hartraien.userservice.DTOs.UserServiceResponse;
 import ru.hartraien.userservice.DTOs.UsernameAndPasswordDTO;
 import ru.hartraien.userservice.entities.User;
+import ru.hartraien.userservice.exceptions.UserServiceLoginException;
 import ru.hartraien.userservice.services.UserService;
-import ru.hartraien.userservice.services.UserServiceLoginException;
 
 @RestController
 public class UserController {
@@ -43,13 +43,11 @@ public class UserController {
     }
 
     @PostMapping("/validName")
-    public ResponseEntity<NameValidationResponse> validateName(@RequestBody UsernameDTO usernameDTO){
+    public ResponseEntity<NameValidationResponse> validateName(@RequestBody UsernameDTO usernameDTO) {
         NameValidationResponse nameValidationResponse;
-        if(userService.checkIfUserExists(usernameDTO.getUsername()))
-        {
+        if (userService.checkIfUserExists(usernameDTO.getUsername())) {
             nameValidationResponse = NameValidationResponse.invalidName();
-        }
-        else{
+        } else {
             nameValidationResponse = NameValidationResponse.validName();
         }
         return ResponseEntity.ok(nameValidationResponse);

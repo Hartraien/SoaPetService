@@ -1,7 +1,5 @@
 package ru.hartraien.userservice.entities;
 
-import org.springframework.lang.NonNull;
-
 import javax.persistence.*;
 
 @Entity

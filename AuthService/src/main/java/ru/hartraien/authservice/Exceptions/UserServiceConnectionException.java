@@ -1,7 +1,5 @@
 package ru.hartraien.authservice.Exceptions;
 
-import ru.hartraien.authservice.Exceptions.UserServiceException;
-
 public class UserServiceConnectionException extends Exception {
     public UserServiceConnectionException() {
     }

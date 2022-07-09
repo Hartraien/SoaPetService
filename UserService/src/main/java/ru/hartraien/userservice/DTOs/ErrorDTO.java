@@ -1,4 +1,4 @@
-package ru.hartraien.userservice.controlleradvice;
+package ru.hartraien.userservice.DTOs;
 
 public class ErrorDTO {
     private String message;

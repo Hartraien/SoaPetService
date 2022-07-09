@@ -2,10 +2,11 @@ package ru.hartraien.authservice.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.hartraien.authservice.DTOs.UserServiceErrorDTO;
@@ -23,6 +24,8 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
     private final String userServiceAddress;
 
     private final ObjectMapper objectMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(UserServiceConnectorImpl.class);
 
     @Autowired
     public UserServiceConnectorImpl(RestTemplate restTemplate
@@ -47,7 +50,8 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
     }
 
     private UserServiceResponse getUserServiceResponse(String url, UsernameAndPasswordDTO usernameAndPasswordDTO) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
-        ResponseEntity<String> userServiceResponseResponseEntity = restTemplate.postForEntity(url, usernameAndPasswordDTO, String.class);
+        HttpEntity<String> request = convertToRequest(usernameAndPasswordDTO);
+        ResponseEntity<String> userServiceResponseResponseEntity = restTemplate.postForEntity(url, request, String.class);
         HttpStatus statusCode = userServiceResponseResponseEntity.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             try {
@@ -67,6 +71,17 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
         }
     }
 
+    private HttpEntity<String> convertToRequest(UsernameAndPasswordDTO usernameAndPasswordDTO) throws UserServiceFailedInputException {
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            return new HttpEntity<>(objectMapper.writeValueAsString(usernameAndPasswordDTO), headers);
+        } catch (JsonProcessingException e) {
+            throw new UserServiceFailedInputException("Could not parse User info to json", e);
+        }
+    }
+
     @Override
     public UserServiceResponse checkUserByUsernameAndId(long id, String username) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
         final String url = userServiceAddress + "/getUserInfo";
@@ -76,7 +91,7 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
 
         UserServiceResponse userServiceResponse = getUserServiceResponse(url, usernameAndPasswordDTO);
 
-        if(id != userServiceResponse.getId())
+        if (id != userServiceResponse.getId())
             throw new UserServiceFailedInputException("Id's do not match");
 
         return userServiceResponse;

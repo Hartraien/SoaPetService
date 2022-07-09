@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class GatewayConfig {
     private final String authServiceUrl;
 
     public GatewayConfig(@Value("${services.pet-service-url}") String petServiceUrl
-            ,@Value("${service.auth-service-url}") String authServiceUrl) {
+            , @Value("${services.auth-service-url}") String authServiceUrl) {
         this.petServiceUrl = petServiceUrl;
         this.authServiceUrl = authServiceUrl;
     }
@@ -44,6 +45,12 @@ public class GatewayConfig {
     @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    @LoadBalanced
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 
 

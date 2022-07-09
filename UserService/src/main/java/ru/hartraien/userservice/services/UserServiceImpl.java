@@ -1,9 +1,12 @@
 package ru.hartraien.userservice.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.hartraien.userservice.entities.User;
+import ru.hartraien.userservice.exceptions.UserServiceLoginException;
 import ru.hartraien.userservice.repositories.UserRepository;
 
 import java.util.Optional;
@@ -13,6 +16,8 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
@@ -27,10 +32,14 @@ public class UserServiceImpl implements UserService {
             User user = userOptional.get();
             if (passwordEncoder.matches(rawPassword, user.getPassword()))
                 return user;
-            else
+            else {
+                logger.debug("Passwords do not match");
                 throw new UserServiceLoginException("Passwords do not match");
-        } else
-            throw new UserServiceLoginException("No such user by username");
+            }
+        } else {
+            logger.debug("No such user by username \"" + username + "\"" );
+            throw new UserServiceLoginException("No such user by username \"" + username + "\"");
+        }
     }
 
     @Override
@@ -42,8 +51,10 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(rawPassword));
             userRepository.save(user);
             return userRepository.findByUsername(username).get();
-        } else
-            throw new UserServiceLoginException("User with username " + username + " already exists");
+        } else {
+            logger.debug("User with username \"" + username + "\" already exists");
+            throw new UserServiceLoginException("User with username \"" + username + "\" already exists");
+        }
     }
 
     @Override
@@ -51,13 +62,16 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
             return userOptional.get();
-        } else
-            throw new UserServiceLoginException("No such user by username");
+        } else {
+            logger.debug("No such user by username \"" + username + "\"");
+            throw new UserServiceLoginException("No such user by username \"" + username + "\"");
+        }
     }
 
     @Override
     public boolean checkIfUserExists(String username) {
         Optional<User> userOptional = userRepository.findByUsername(username);
+        logger.debug("User with username \"" + username + "\" " + (userOptional.isPresent() ? "exists" : "does not exist"));
         return userOptional.isPresent();
     }
 }

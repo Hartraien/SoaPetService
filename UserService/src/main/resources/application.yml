@@ -11,3 +11,7 @@ eureka:
     nonSecurePort: ${server.port}
     preferIpAddress: true
 
+logging:
+  level:
+    ru:
+      hartraien: DEBUG

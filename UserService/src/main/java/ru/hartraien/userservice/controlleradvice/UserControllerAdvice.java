@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.hartraien.userservice.services.UserServiceLoginException;
+import ru.hartraien.userservice.DTOs.ErrorDTO;
+import ru.hartraien.userservice.exceptions.UserServiceLoginException;
 
 @ControllerAdvice
 public class UserControllerAdvice {
@@ -16,7 +17,7 @@ public class UserControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserServiceLoginException.class)
-    public ResponseEntity<ErrorDTO> handlWrongInputException(UserServiceLoginException exception) {
+    public ResponseEntity<ErrorDTO> handleWrongInputException(UserServiceLoginException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(exception.getMessage()));
     }

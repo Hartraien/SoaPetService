@@ -17,7 +17,7 @@ public class ControllerExceptionAdvisor {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserServiceFailedInputException.class)
-    public ResponseEntity<ErrorDTO> handlWrongInputException(UserServiceFailedInputException exception) {
+    public ResponseEntity<ErrorDTO> handleWrongInputException(UserServiceFailedInputException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(exception.getMessage()));
     }

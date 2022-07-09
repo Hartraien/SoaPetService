@@ -7,17 +7,17 @@ public class TokenResponse {
 
     private String tokenHeader;
 
+    public TokenResponse(String accessToken, String refreshToken, String tokenHeader) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.tokenHeader = tokenHeader;
+    }
+
     public String getTokenHeader() {
         return tokenHeader;
     }
 
     public void setTokenHeader(String tokenHeader) {
-        this.tokenHeader = tokenHeader;
-    }
-
-    public TokenResponse(String accessToken, String refreshToken, String tokenHeader) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
         this.tokenHeader = tokenHeader;
     }
 

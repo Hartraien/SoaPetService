@@ -13,7 +13,7 @@ import java.util.List;
 public class PetController {
 
     @GetMapping
-    public ResponseEntity<PetInfoList> getAllPets(){
+    public ResponseEntity<PetInfoList> getAllPets() {
         PetInfoList petInfoList = new PetInfoList();
         List<PetInfo> list = new ArrayList<>();
         list.add(new PetInfo("One"));

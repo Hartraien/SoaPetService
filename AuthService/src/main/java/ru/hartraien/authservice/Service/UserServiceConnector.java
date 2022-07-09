@@ -1,7 +1,7 @@
 package ru.hartraien.authservice.Service;
 
-import ru.hartraien.authservice.DTOs.UsernameAndPasswordDTO;
 import ru.hartraien.authservice.DTOs.UserServiceResponse;
+import ru.hartraien.authservice.DTOs.UsernameAndPasswordDTO;
 import ru.hartraien.authservice.Exceptions.UserServiceConnectionException;
 import ru.hartraien.authservice.Exceptions.UserServiceException;
 import ru.hartraien.authservice.Exceptions.UserServiceFailedInputException;

@@ -1,4 +1,4 @@
-package ru.hartraien.userservice.services;
+package ru.hartraien.userservice.exceptions;
 
 public class UserServiceLoginException extends Exception {
     public UserServiceLoginException() {
