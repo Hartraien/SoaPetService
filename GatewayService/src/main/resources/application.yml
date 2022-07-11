@@ -17,9 +17,10 @@ authorization:
 services:
   auth-service-url: lb://auth-service
   pet-service-url: lb://pet-service
+  user-service-url: lb://user-service
 
 logging:
   level:
-    com:
-      example: DEBUG
+    ru:
+      hartraien: DEBUG
 

@@ -18,6 +18,7 @@ services:
     restart: on-failure
     depends_on:
       - discovery
+      - auth-service
     environment:
       - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
     networks:
@@ -30,7 +31,6 @@ services:
     restart: on-failure
     depends_on:
       - discovery
-      - gateway
       - postgresSql
     environment:
       - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
@@ -49,7 +49,6 @@ services:
     restart: on-failure
     depends_on:
       - discovery
-      - gateway
       - user-service
     environment:
       - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
@@ -63,7 +62,6 @@ services:
     restart: on-failure
     depends_on:
       - discovery
-      - gateway
       - postgresSql
     environment:
       - eureka.client.service-url.defaultZone=http://discovery:8761/eureka/

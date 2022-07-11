@@ -33,12 +33,14 @@ public class UserServiceImpl implements UserService {
             if (passwordEncoder.matches(rawPassword, user.getPassword()))
                 return user;
             else {
-                logger.debug("Passwords do not match");
-                throw new UserServiceLoginException("Passwords do not match");
+                String errorMessage = "Passwords do not match";
+                logger.debug(errorMessage);
+                throw new UserServiceLoginException(errorMessage);
             }
         } else {
-            logger.debug("No such user by username \"" + username + "\"" );
-            throw new UserServiceLoginException("No such user by username \"" + username + "\"");
+            String formatedOutput = String.format("No such user with username '%s'", username);
+            logger.debug(formatedOutput);
+            throw new UserServiceLoginException(formatedOutput);
         }
     }
 
@@ -52,8 +54,9 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return userRepository.findByUsername(username).get();
         } else {
-            logger.debug("User with username \"" + username + "\" already exists");
-            throw new UserServiceLoginException("User with username \"" + username + "\" already exists");
+            String formatedOutput = String.format("User with username '%s' already exists", username);
+            logger.debug(formatedOutput);
+            throw new UserServiceLoginException(formatedOutput);
         }
     }
 
@@ -63,15 +66,17 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             return userOptional.get();
         } else {
-            logger.debug("No such user by username \"" + username + "\"");
-            throw new UserServiceLoginException("No such user by username \"" + username + "\"");
+            String formatedOutput = String.format("No such user with username '%s'", username);
+            logger.debug(formatedOutput);
+            throw new UserServiceLoginException(formatedOutput);
         }
     }
 
     @Override
     public boolean checkIfUserExists(String username) {
         Optional<User> userOptional = userRepository.findByUsername(username);
-        logger.debug("User with username \"" + username + "\" " + (userOptional.isPresent() ? "exists" : "does not exist"));
+        String formatedOutput = String.format("User with username '%s' %s", username, (userOptional.isPresent() ? "exists" : "does not exist"));
+        logger.debug(formatedOutput);
         return userOptional.isPresent();
     }
 }

@@ -1,0 +1,6 @@
+pet-constants:
+  types:
+    - Cat
+    - Dog
+    - Bunny
+    - Fish

@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 import ru.hartraien.authservice.DTOs.UserServiceErrorDTO;
 import ru.hartraien.authservice.DTOs.UserServiceResponse;
 import ru.hartraien.authservice.DTOs.UsernameAndPasswordDTO;
@@ -51,7 +54,16 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
 
     private UserServiceResponse getUserServiceResponse(String url, UsernameAndPasswordDTO usernameAndPasswordDTO) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
         HttpEntity<String> request = convertToRequest(usernameAndPasswordDTO);
-        ResponseEntity<String> userServiceResponseResponseEntity = restTemplate.postForEntity(url, request, String.class);
+        ResponseEntity<String> userServiceResponseResponseEntity;
+        try {
+            userServiceResponseResponseEntity = restTemplate.postForEntity(url, request, String.class);
+        } catch (HttpClientErrorException exception) {
+            logger.warn(exception.getMessage(), exception);
+            throw new UserServiceFailedInputException(exception.getResponseBodyAsString(), exception);
+        } catch (HttpServerErrorException | UnknownHttpStatusCodeException exception) {
+            logger.warn(exception.getMessage(), exception);
+            throw new UserServiceConnectionException("Could not connect to user-service", exception);
+        }
         HttpStatus statusCode = userServiceResponseResponseEntity.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             try {

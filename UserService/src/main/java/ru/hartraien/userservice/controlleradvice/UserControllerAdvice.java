@@ -19,6 +19,6 @@ public class UserControllerAdvice {
     @ExceptionHandler(UserServiceLoginException.class)
     public ResponseEntity<ErrorDTO> handleWrongInputException(UserServiceLoginException exception) {
         logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
     }
 }

@@ -24,7 +24,7 @@ public class JwtUtilImpl implements JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private final String id_claim_name;
 
-    public JwtUtilImpl(@Value("${jwt.expiration}") int jwtExpirationMS,@Value("${id-claim-name}") String id_claim_name) {
+    public JwtUtilImpl(@Value("${jwt.expiration}") int jwtExpirationMS, @Value("${id-claim-name}") String id_claim_name) {
         this.jwtExpirationMS = jwtExpirationMS;
         this.id_claim_name = id_claim_name;
         secretKey = Keys.secretKeyFor(signatureAlgorithm);

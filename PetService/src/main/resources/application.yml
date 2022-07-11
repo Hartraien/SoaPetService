@@ -1,6 +1,14 @@
 spring:
   application:
     name: pet-service
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  jpa:
+    show-sql: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
 
 server:
   port: 8080
@@ -10,8 +18,8 @@ eureka:
     nonSecurePortEnabled: true
     nonSecurePort: ${server.port}
     preferIpAddress: true
-  #    hostname: <your_client_host> # or you can use preferIpAddress: true
-#    homePageUrl: http://${eureka.instance.hostname}/
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka/
+
+logging:
+  level:
+    ru:
+      hartraien: DEBUG

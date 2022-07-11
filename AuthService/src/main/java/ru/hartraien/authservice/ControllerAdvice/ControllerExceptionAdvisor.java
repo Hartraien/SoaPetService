@@ -1,7 +1,11 @@
 package ru.hartraien.authservice.ControllerAdvice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,11 +19,27 @@ public class ControllerExceptionAdvisor {
 
     private final Logger logger = LoggerFactory.getLogger(ControllerExceptionAdvisor.class);
 
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public ControllerExceptionAdvisor(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserServiceFailedInputException.class)
     public ResponseEntity<ErrorDTO> handleWrongInputException(UserServiceFailedInputException exception) {
         logger.warn(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(exception.getMessage()));
+        ErrorDTO errorDTO = new ErrorDTO(exception.getMessage());
+        try {
+            logger.debug(exception.getMessage());
+            errorDTO = objectMapper.readValue(exception.getMessage(), ErrorDTO.class);
+        } catch (JsonMappingException e) {
+            logger.warn("Could not map", e);
+        } catch (JsonProcessingException e) {
+            logger.warn("Could not process json", e);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
 

@@ -18,11 +18,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     private final UserServiceConnector userServiceConnector;
-
+    private final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     @Value("${authorization.header-key}")
     private String authorizationHeader;
-
-    private final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
     public AuthServiceImpl(JwtUtil jwtUtil, UserServiceConnector userServiceConnector) {
@@ -91,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
                 logger.debug("Could not register user due to inner failure, try again later due to " + e.getMessage(), e);
                 throw new AuthConnectionException("Could not register user due to inner failure, try again later", e);
             }
-        } else{
+        } else {
             logger.debug("Invalid Token");
             throw new AuthTokenInvalidException("Invalid Token");
         }
