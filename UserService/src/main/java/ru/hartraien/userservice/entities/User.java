@@ -73,4 +73,16 @@ public class User {
     public void setUnlockTime(LocalDateTime lockedTime) {
         this.unlockTime = lockedTime;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", failedLoginAttempts=" + failedLoginAttempts +
+                ", locked=" + locked +
+                ", unlockTime=" + unlockTime +
+                '}';
+    }
 }

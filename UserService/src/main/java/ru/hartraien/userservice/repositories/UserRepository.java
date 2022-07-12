@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("UPDATE User u SET u.failedLoginAttempts = 0, u.locked = :lockStatus WHERE  u.id=:id")
     @Modifying
-    void setUserLockById(@Param("id") Long id, @Param("lockStatus") boolean b);
+    void setUserLockById(@Param("id") Long id, @Param("lockStatus") boolean lockStatus);
 
     @Query("UPDATE User u SET u.failedLoginAttempts = u.failedLoginAttempts - 1 WHERE  u.id=:id")
     @Modifying

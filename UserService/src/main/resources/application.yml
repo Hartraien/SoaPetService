@@ -18,4 +18,4 @@ logging:
 
 application:
   loginFailedAttemptLimit: 10
-  loginFailedAttemptSeconds: 3600
+  loginFailedAttemptSeconds: 60
