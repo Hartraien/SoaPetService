@@ -15,3 +15,7 @@ logging:
   level:
     ru:
       hartraien: DEBUG
+
+application:
+  loginFailedAttemptLimit: 10
+  loginFailedAttemptSeconds: 3600

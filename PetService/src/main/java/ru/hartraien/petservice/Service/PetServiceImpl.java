@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hartraien.petservice.DTOs.PetInsertInput;
 import ru.hartraien.petservice.DTOs.PetUpdateInput;
 import ru.hartraien.petservice.entities.Pet;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class PetServiceImpl implements PetService {
     private final Logger logger = LoggerFactory.getLogger(PetServiceImpl.class);
     private final PetRepository petRepository;
@@ -49,6 +51,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Transactional
     public void addPetForUser(PetInsertInput petInsertInput, Long userId) throws PetServiceException {
         try {
             Pet pet = convertInputToPet(petInsertInput);
@@ -73,6 +76,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Transactional
     public void updatePetForUser(PetUpdateInput petUpdateInput, Long ownerId) throws PetServiceException {
         Long petId = petUpdateInput.getId();
         Optional<Pet> petOptional = petRepository.findById(petId);
@@ -105,6 +109,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Transactional
     public void deletePetForUser(Long petId, Long ownerId) throws PetServiceException {
         Optional<Pet> petOptional = petRepository.findById(petId);
         if (petOptional.isPresent() && Objects.equals(ownerId, petOptional.get().getOwnerId())) {
