@@ -52,17 +52,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private TokenResponse generateTokenForUser(UserServiceResponse userServiceResponse) {
-        long id = userServiceResponse.getId();
-        String username = userServiceResponse.getUsername();
-        logger.debug("Id for token = " + id + " Username for token = \"" + username + "\"");
-        String accessToken = jwtUtil.generateToken(id, username, TokenTypes.ACCESS);
-        String refreshToken = jwtUtil.generateToken(id, username, TokenTypes.REFRESH);
-        logger.debug("access token = " + accessToken);
-        logger.debug("access token username = " + jwtUtil.getUsernameFromToken(accessToken));
-        return new TokenResponse(accessToken, refreshToken, authorizationHeader);
-    }
-
     @Override
     public TokenResponse refreshToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
         UserServiceResponse userServiceResponse = getUserServiceResponse(tokenRequest);
@@ -72,6 +61,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserServiceResponse verifyToken(TokenRequest tokenRequest) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException, AuthTokenInvalidException {
         return getUserServiceResponse(tokenRequest);
+    }
+
+    private TokenResponse generateTokenForUser(UserServiceResponse userServiceResponse) {
+        long id = userServiceResponse.getId();
+        String username = userServiceResponse.getUsername();
+        logger.debug("Id for token = " + id + " Username for token = \"" + username + "\"");
+        String accessToken = jwtUtil.generateToken(id, username, TokenTypes.ACCESS);
+        String refreshToken = jwtUtil.generateToken(id, username, TokenTypes.REFRESH);
+        logger.debug("access token = " + accessToken);
+        logger.debug("access token username = " + jwtUtil.getUsernameFromToken(accessToken));
+        return new TokenResponse(accessToken, refreshToken, authorizationHeader);
     }
 
     private UserServiceResponse getUserServiceResponse(TokenRequest tokenRequest) throws UserServiceFailedInputException, AuthServiceException, AuthConnectionException, AuthTokenInvalidException {

@@ -77,6 +77,43 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public User register(String username, String rawPassword) throws UserServiceLoginException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isEmpty()) {
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(passwordEncoder.encode(rawPassword));
+            userRepository.save(user);
+            return userRepository.findByUsername(username).get();
+        } else {
+            String formattedOutput = String.format("Account with username '%s' already exists", username);
+            logger.debug(formattedOutput);
+            throw new UserServiceLoginException(formattedOutput);
+        }
+    }
+
+    @Override
+    public User getUserInfo(String username) throws UserServiceLoginException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            String formattedOutput = String.format("No account with username '%s'", username);
+            logger.debug(formattedOutput);
+            throw new UserServiceLoginException(formattedOutput);
+        }
+    }
+
+    @Override
+    public boolean checkIfUserExists(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        String formattedOutput = String.format("Account with username '%s' %s", username, (userOptional.isPresent() ? "exists" : "does not exist"));
+        logger.debug(formattedOutput);
+        return userOptional.isPresent();
+    }
+
     private String getTimeToUnlockInMinutes(User user) {
         logger.debug("Calculating time until unlock");
         LocalDateTime unlockTime = user.getUnlockTime();
@@ -124,42 +161,5 @@ public class UserServiceImpl implements UserService {
     private void resetLoginFailures(User user) {
         userLockService.updateFailedAttemptsById(user.getId(), 0);
 
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public User register(String username, String rawPassword) throws UserServiceLoginException {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (userOptional.isEmpty()) {
-            User user = new User();
-            user.setUsername(username);
-            user.setPassword(passwordEncoder.encode(rawPassword));
-            userRepository.save(user);
-            return userRepository.findByUsername(username).get();
-        } else {
-            String formattedOutput = String.format("Account with username '%s' already exists", username);
-            logger.debug(formattedOutput);
-            throw new UserServiceLoginException(formattedOutput);
-        }
-    }
-
-    @Override
-    public User getUserInfo(String username) throws UserServiceLoginException {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        } else {
-            String formattedOutput = String.format("No account with username '%s'", username);
-            logger.debug(formattedOutput);
-            throw new UserServiceLoginException(formattedOutput);
-        }
-    }
-
-    @Override
-    public boolean checkIfUserExists(String username) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        String formattedOutput = String.format("Account with username '%s' %s", username, (userOptional.isPresent() ? "exists" : "does not exist"));
-        logger.debug(formattedOutput);
-        return userOptional.isPresent();
     }
 }

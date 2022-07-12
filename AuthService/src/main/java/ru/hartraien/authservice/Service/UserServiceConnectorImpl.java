@@ -52,6 +52,21 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
         return getUserServiceResponse(url, usernameAndPasswordDTO);
     }
 
+    @Override
+    public UserServiceResponse checkUserByUsernameAndId(long id, String username) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
+        final String url = userServiceAddress + "/getUserInfo";
+
+        UsernameAndPasswordDTO usernameAndPasswordDTO = new UsernameAndPasswordDTO();
+        usernameAndPasswordDTO.setUsername(username);
+
+        UserServiceResponse userServiceResponse = getUserServiceResponse(url, usernameAndPasswordDTO);
+
+        if (id != userServiceResponse.getId())
+            throw new UserServiceFailedInputException("Id's do not match");
+
+        return userServiceResponse;
+    }
+
     private UserServiceResponse getUserServiceResponse(String url, UsernameAndPasswordDTO usernameAndPasswordDTO) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
         HttpEntity<String> request = convertToRequest(usernameAndPasswordDTO);
         ResponseEntity<String> userServiceResponseResponseEntity;
@@ -92,20 +107,5 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
         } catch (JsonProcessingException e) {
             throw new UserServiceFailedInputException("Could not parse User info to json", e);
         }
-    }
-
-    @Override
-    public UserServiceResponse checkUserByUsernameAndId(long id, String username) throws UserServiceException, UserServiceConnectionException, UserServiceFailedInputException {
-        final String url = userServiceAddress + "/getUserInfo";
-
-        UsernameAndPasswordDTO usernameAndPasswordDTO = new UsernameAndPasswordDTO();
-        usernameAndPasswordDTO.setUsername(username);
-
-        UserServiceResponse userServiceResponse = getUserServiceResponse(url, usernameAndPasswordDTO);
-
-        if (id != userServiceResponse.getId())
-            throw new UserServiceFailedInputException("Id's do not match");
-
-        return userServiceResponse;
     }
 }

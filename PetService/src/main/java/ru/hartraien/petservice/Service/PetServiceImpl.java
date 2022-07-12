@@ -66,15 +66,6 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    private Pet convertInputToPet(PetInsertInput petInsertInput) throws TypeServiceException {
-        Pet result = new Pet();
-        result.setName(petInsertInput.getName());
-        result.setBirthdate(petInsertInput.getBirthdate());
-        result.setSex(petInsertInput.getSex());
-        result.setType(petTypeService.getTypeByName(petInsertInput.getType()));
-        return result;
-    }
-
     @Override
     @Transactional
     public void updatePetForUser(PetUpdateInput petUpdateInput, Long ownerId) throws PetServiceException {
@@ -97,17 +88,6 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    private void updatePetValues(Pet pet, PetUpdateInput petUpdateInput) throws TypeServiceException {
-        if (petUpdateInput.getName() != null)
-            pet.setName(petUpdateInput.getName());
-        if (petUpdateInput.getBirthdate() != null)
-            pet.setBirthdate(petUpdateInput.getBirthdate());
-        if (petUpdateInput.getSex() != null)
-            pet.setSex(petUpdateInput.getSex());
-        if (petUpdateInput.getType() != null)
-            pet.setType(petTypeService.getTypeByName(petUpdateInput.getType()));
-    }
-
     @Override
     @Transactional
     public void deletePetForUser(Long petId, Long ownerId) throws PetServiceException {
@@ -120,5 +100,25 @@ public class PetServiceImpl implements PetService {
             logger.warn(innerMessage);
             throw new PetServiceException(innerMessage, outerMessage);
         }
+    }
+
+    private Pet convertInputToPet(PetInsertInput petInsertInput) throws TypeServiceException {
+        Pet result = new Pet();
+        result.setName(petInsertInput.getName());
+        result.setBirthdate(petInsertInput.getBirthdate());
+        result.setSex(petInsertInput.getSex());
+        result.setType(petTypeService.getTypeByName(petInsertInput.getType()));
+        return result;
+    }
+
+    private void updatePetValues(Pet pet, PetUpdateInput petUpdateInput) throws TypeServiceException {
+        if (petUpdateInput.getName() != null)
+            pet.setName(petUpdateInput.getName());
+        if (petUpdateInput.getBirthdate() != null)
+            pet.setBirthdate(petUpdateInput.getBirthdate());
+        if (petUpdateInput.getSex() != null)
+            pet.setSex(petUpdateInput.getSex());
+        if (petUpdateInput.getType() != null)
+            pet.setType(petTypeService.getTypeByName(petUpdateInput.getType()));
     }
 }
