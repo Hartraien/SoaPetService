@@ -1,5 +1,6 @@
 package ru.hartraien.authservice.Service;
 
+import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,22 +77,28 @@ public class AuthServiceImpl implements AuthService {
 
     private UserServiceResponse getUserServiceResponse(TokenRequest tokenRequest) throws UserServiceFailedInputException, AuthServiceException, AuthConnectionException, AuthTokenInvalidException {
         String token = tokenRequest.getToken();
-        if (jwtUtil.validateToken(token)) {
-            long id = jwtUtil.getIdFromToken(token);
-            String username = jwtUtil.getUsernameFromToken(token);
-            logger.debug("Id from token = " + id + " Username from token = \"" + username + "\"");
-            try {
-                return userServiceConnector.checkUserByUsernameAndId(id, username);
-            } catch (UserServiceException e) {
-                logger.error("Could not parse answer due to " + e.getMessage());
-                throw new AuthServiceException("Could not parse answer", e);
-            } catch (UserServiceConnectionException e) {
-                logger.error("Could not register user due to inner failure, try again later due to " + e.getMessage());
-                throw new AuthConnectionException("Could not register user due to inner failure, try again later", e);
+        try {
+            if (jwtUtil.validateToken(token)) {
+                long id = jwtUtil.getIdFromToken(token);
+                String username = jwtUtil.getUsernameFromToken(token);
+                logger.debug("Id from token = " + id + " Username from token = \"" + username + "\"");
+                try {
+                    return userServiceConnector.checkUserByUsernameAndId(id, username);
+                } catch (UserServiceException e) {
+                    logger.error("Could not parse answer due to " + e.getMessage());
+                    throw new AuthServiceException("Could not parse answer", e);
+                } catch (UserServiceConnectionException e) {
+                    logger.error("Could not register user due to inner failure, try again later due to " + e.getMessage());
+                    throw new AuthConnectionException("Could not register user due to inner failure, try again later", e);
+                }
+            } else {
+                logger.debug("Invalid Token");
+                throw new AuthTokenInvalidException("Invalid Token");
             }
-        } else {
-            logger.debug("Invalid Token");
-            throw new AuthTokenInvalidException("Invalid Token");
+        }
+        catch (JwtException e){
+            logger.debug(e.getMessage());
+            throw new AuthTokenInvalidException(e.getMessage(), e);
         }
     }
 }

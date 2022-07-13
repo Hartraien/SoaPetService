@@ -21,7 +21,7 @@ authorization:
   header-key: "Authorization"
 
 jwt:
-  expiration: 86400
+  expiration-seconds: 900
 
 logging:
   level:

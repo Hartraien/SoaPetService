@@ -89,6 +89,7 @@ public class AuthorizationFilter implements GlobalFilter {
         final Map<String, String> error = Map.of("errorCode", String.valueOf(statusCode.value()), "message", message);
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(statusCode);
+        response.getHeaders().add("Content-Type", MediaType.APPLICATION_JSON.toString());
         return response.writeWith(new Jackson2JsonEncoder().encode(Mono.just(error),
                 response.bufferFactory(),
                 ResolvableType.forInstance(error),
