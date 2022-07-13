@@ -13,6 +13,7 @@ public class PetInsertInput {
     @NotNull
     @NotBlank
     private String name;
+    @NotNull
     private LocalDate birthdate;
 
     @NotNull

@@ -1,0 +1,416 @@
+openapi: 3.0.3
+info:
+  title: SoaPetService
+  description: SoaPetService
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+    description: Entry point
+paths:
+  /register:
+    post:
+      summary: Регистрация пользователя.
+      description: Регистрация пользователя по имени и паролю
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsernameAndPassword"
+      responses:
+        "200":
+          description: Успешно зарегистрирован пользователь
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Невалидные данные, например, пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /login:
+    post:
+      summary: Логин пользователя.
+      description: Логин пользователя по имени и паролю
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsernameAndPassword"
+      responses:
+        "200":
+          description: Пользователь успешно залогинился
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Невалидные данные, например, пользователь не существует или пароль не подходит
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /validName:
+    post:
+      summary: Проверка валидности пользователя
+      description: Проверяет, доступно ли имя пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Username"
+      responses:
+        "200":
+          description: Результат проверки валидности имени
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidNameResponse"
+  /refreshToken:
+    post:
+      summary: Обновление токена
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRequest"
+      responses:
+        "200":
+          description: Новая пара токенов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Невалидные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /pet-types:
+    get:
+      summary: Получить список видов животных
+      description: Получить список видов животных (запрос только от залогиненого пользователя)
+      responses:
+        "200":
+          description: Список видов животных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetTypesList"
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /pets:
+    get:
+      summary: Получить список животных пользователя
+      responses:
+        "200":
+          description: Список животных пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetTypesList"
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Добавить животное
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PetInsertInput"
+      responses:
+        "200":
+          description: Животное успешно добавлено
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Не верные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Изменить животное
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PetUpdateInput"
+      responses:
+        "200":
+          description: Животное успешно изменено
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Не верные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /pets/{pet_id}:
+    get:
+      summary: Получить инфу о животном по id
+      description: Получить инфу о животном по id
+      parameters:
+        - description: Идентификатор элемента
+          in: path
+          name: pet_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Информация о животном
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetFullInfo"
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Не верные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Удалить животное по id
+      description: удалить животное по id
+      parameters:
+        - description: Идентификатор элемента
+          in: path
+          name: pet_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Животное успешно удалено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetFullInfo"
+        "401":
+          description: Не верный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Не верные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    UsernameAndPassword:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          nullable: false
+          description: Имя пользователя
+          example: "Username"
+        password:
+          type: string
+          nullable: false
+          description: пароль
+          example: "Password"
+      example:
+        username: "Username"
+        password: "Password"
+    Username:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          nullable: false
+          description: Имя пользователя для проверки валидности
+          example: "Username"
+      example:
+        username: "Username"
+        password: "Password"
+    TokenRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Токен для обновления
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Токен для авторизации
+        refreshToken:
+          type: string
+          description: Токен для обновления
+        tokenHeader:
+          type: string
+          description: Header для токена
+          example: "Authorization"
+    ValidNameResponse:
+      type: object
+      properties:
+        validName:
+          type: boolean
+          description: Доступно ли имя пользователя
+    PetTypesList:
+      type: object
+      properties:
+        types:
+          type: array
+          items:
+            description: Строки с названиями видов животных
+    PetInsertInput:
+      type: object
+      required:
+        - name
+        - birthdate
+        - sex
+        - type
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Имя животного
+          example: "Petname"
+        birthdate:
+          type: string
+          nullable: false
+          description: Дата рождения
+          format: "YYYY-MM-DD"
+          example: "2020-03-14"
+        sex:
+          type: object
+          nullable: false
+          description: Пол животного
+          enum:
+            - male
+            - female
+        type:
+          type: string
+          nullable: false
+          description: Вид животного (берётся из списка, определённого на сервере)
+          example: "cat"
+      example:
+        name: "kitty"
+        birthdate: "2020-03-14"
+        sex: "female"
+        type: "cat"
+    PetUpdateInput:
+      type: object
+      description: Какие поля животного нужно обновить
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          nullable: false
+          description: Id животного
+        name:
+          type: string
+          description: Имя животного
+          example: "Petname"
+        birthdate:
+          type: string
+          description: Дата рождения
+          format: "YYYY-MM-DD"
+          example: "2020-03-14"
+        sex:
+          type: object
+          description: Пол животного
+          enum:
+            - male
+            - female
+        type:
+          type: string
+          description: Вид животного (берётся из списка, определённого на сервере)
+          example: "cat"
+      example:
+        id: 1
+        name: "Kitty"
+    PetInfoList:
+      properties:
+        pets:
+          type: array
+          items:
+            $ref: "#/components/schemas/PetInfo"
+    PetInfo:
+      properties:
+        id:
+          type: integer
+          description: Id животного
+        name:
+          type: string
+          description: Имя животного
+    PetFullInfo:
+      properties:
+        id:
+          type: integer
+          description: Id животного
+        name:
+          type: string
+          description: Имя животного
+        birthdate:
+          type: string
+          description: Дата рождения животного
+        sex:
+          type: string
+          enum:
+            - Male
+            - Female
+        type:
+          type: string
+          description: Вид животного
+    Error:
+      required:
+        - errorcode
+        - message
+      properties:
+        code:
+          nullable: false
+          type: integer
+        message:
+          nullable: false
+          type: string
+
+
+
+  
