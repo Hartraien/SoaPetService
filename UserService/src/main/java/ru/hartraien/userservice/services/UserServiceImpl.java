@@ -160,6 +160,5 @@ public class UserServiceImpl implements UserService {
 
     private void resetLoginFailures(User user) {
         userLockService.updateFailedAttemptsById(user.getId(), 0);
-
     }
 }

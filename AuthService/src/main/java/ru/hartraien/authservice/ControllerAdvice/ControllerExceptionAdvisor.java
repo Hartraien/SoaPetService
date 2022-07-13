@@ -29,15 +29,15 @@ public class ControllerExceptionAdvisor {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserServiceFailedInputException.class)
     public ResponseEntity<ErrorDTO> handleWrongInputException(UserServiceFailedInputException exception) {
-        logger.warn(exception.getMessage(), exception);
+        logger.error(exception.getMessage(), exception);
         ErrorDTO errorDTO = new ErrorDTO(exception.getMessage());
         try {
             logger.debug(exception.getMessage());
             errorDTO = objectMapper.readValue(exception.getMessage(), ErrorDTO.class);
         } catch (JsonMappingException e) {
-            logger.warn("Could not map", e);
+            logger.error("Could not map", e);
         } catch (JsonProcessingException e) {
-            logger.warn("Could not process json", e);
+            logger.error("Could not process json", e);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
@@ -46,28 +46,32 @@ public class ControllerExceptionAdvisor {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthTokenInvalidException.class)
     public ResponseEntity<ErrorDTO> handleTokenInvalidException(AuthTokenInvalidException exception) {
-        logger.warn(exception.getMessage(), exception);
+        logger.debug("Invalid token because: " + exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO("Invalid authorization token"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthTokenExpiredException.class)
     public ResponseEntity<ErrorDTO> handleTokenExpiredException(AuthTokenExpiredException exception) {
-        logger.warn(exception.getMessage(), exception);
+        logger.debug("Token expired because: " + exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO(exception.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(AuthConnectionException.class)
     public ResponseEntity<ErrorDTO> handleConnectionException(AuthConnectionException exception) {
-        logger.warn(exception.getMessage(), exception);
+        logger.debug("Connection failed because: " + exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDTO(exception.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(AuthServiceException.class)
     public ResponseEntity<ErrorDTO> handleConnectionException(AuthServiceException exception) {
-        logger.warn(exception.getMessage(), exception);
+        logger.debug("Service error: " + exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDTO("Internal error, please, try again later"));
     }
 }

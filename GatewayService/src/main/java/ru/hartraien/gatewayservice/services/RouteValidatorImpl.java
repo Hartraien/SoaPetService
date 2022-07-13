@@ -24,14 +24,14 @@ public class RouteValidatorImpl implements RouteValidator {
     @Override
     public boolean isSecured(ServerHttpRequest request) {
         String path = request.getURI().getPath();
-        logger.info("isSecured: tried to access path = " + path);
+        logger.debug("isSecured: tried to access path = " + path);
         return securedPoints.stream().anyMatch(path::startsWith);
     }
 
     @Override
     public boolean isForbidden(ServerHttpRequest request) {
         String path = request.getURI().getPath();
-        logger.info("isForbidden: tried to access path = " + path);
+        logger.debug("isForbidden: tried to access path = " + path);
         return !unauthorizedPoints.contains(path) && !isSecured(request);
     }
 }

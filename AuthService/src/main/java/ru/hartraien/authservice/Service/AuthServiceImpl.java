@@ -83,10 +83,10 @@ public class AuthServiceImpl implements AuthService {
             try {
                 return userServiceConnector.checkUserByUsernameAndId(id, username);
             } catch (UserServiceException e) {
-                logger.debug("Could not parse answer due to " + e.getMessage(), e);
+                logger.error("Could not parse answer due to " + e.getMessage());
                 throw new AuthServiceException("Could not parse answer", e);
             } catch (UserServiceConnectionException e) {
-                logger.debug("Could not register user due to inner failure, try again later due to " + e.getMessage(), e);
+                logger.error("Could not register user due to inner failure, try again later due to " + e.getMessage());
                 throw new AuthConnectionException("Could not register user due to inner failure, try again later", e);
             }
         } else {

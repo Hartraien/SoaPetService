@@ -73,10 +73,10 @@ public class UserServiceConnectorImpl implements UserServiceConnector {
         try {
             userServiceResponseResponseEntity = restTemplate.postForEntity(url, request, String.class);
         } catch (HttpClientErrorException exception) {
-            logger.warn(exception.getMessage(), exception);
+            logger.error(exception.getMessage(), exception);
             throw new UserServiceFailedInputException(exception.getResponseBodyAsString(), exception);
         } catch (HttpServerErrorException | UnknownHttpStatusCodeException exception) {
-            logger.warn(exception.getMessage(), exception);
+            logger.error(exception.getMessage(), exception);
             throw new UserServiceConnectionException("Could not connect to user-service", exception);
         }
         HttpStatus statusCode = userServiceResponseResponseEntity.getStatusCode();

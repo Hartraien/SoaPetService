@@ -1,6 +1,6 @@
 spring:
   application:
-    name: auth-service
+    name: user-service
 
 server:
   port: 8080
@@ -10,20 +10,14 @@ eureka:
     nonSecurePortEnabled: true
     nonSecurePort: ${server.port}
     preferIpAddress: true
-
-services:
-  names:
-    user-service: "lb://user-service"
-
-authorization:
-  header-key: "Authorization"
-
-jwt:
-  expiration: 86400
+  client:
+    enabled: false
 
 logging:
   level:
     ru:
       hartraien: DEBUG
 
-id-claim-name: "id"
+application:
+  loginFailedAttemptLimit: 10
+  loginFailedAttemptSeconds: 60

@@ -46,9 +46,4 @@ public class AuthServiceConnectorReactiveImpl implements AuthServiceConnector {
                 .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new AuthServiceException("Auth service is not working")))
                 .bodyToMono(AuthServiceResponse.class);
     }
-
-    @FunctionalInterface
-    public interface MethodToCall {
-        void apply();
-    }
 }

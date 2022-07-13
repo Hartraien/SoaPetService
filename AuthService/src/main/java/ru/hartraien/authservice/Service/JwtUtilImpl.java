@@ -66,13 +66,13 @@ public class JwtUtilImpl implements JwtUtil {
             Jws<Claims> claimsJws = parser.parseClaimsJws(token);
             return !isTokenExpired(claimsJws);
         } catch (MalformedJwtException e) {
-            logger.warn("Invalid JWT token: {}", e.getMessage());
+            logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            logger.warn("JWT token is expired: {}", e.getMessage());
+            logger.error("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            logger.warn("JWT token is unsupported: {}", e.getMessage());
+            logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.warn("JWT claims string is empty: {}", e.getMessage());
+            logger.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
     }

@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: pet-service
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  jpa:
+    show-sql: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+eureka:
+  instance:
+    nonSecurePortEnabled: true
+    nonSecurePort: ${server.port}
+    preferIpAddress: true
+  client:
+    enabled: false
+
+logging:
+  level:
+    ru:
+      hartraien: DEBUG

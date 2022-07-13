@@ -10,6 +10,8 @@ eureka:
     nonSecurePortEnabled: true
     nonSecurePort: ${server.port}
     preferIpAddress: true
+  client:
+    enabled: false
 
 services:
   names:
