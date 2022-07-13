@@ -2,6 +2,7 @@ package ru.hartraien.authservice.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,8 @@ import ru.hartraien.authservice.Exceptions.AuthTokenInvalidException;
 import ru.hartraien.authservice.Exceptions.UserServiceFailedInputException;
 import ru.hartraien.authservice.Service.AuthService;
 
+import javax.validation.Valid;
+
 @RestController
 public class AuthController {
 
@@ -27,22 +30,22 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<TokenResponse> register(@RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException {
+    public ResponseEntity<TokenResponse> register(@Valid @RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException {
         return ResponseEntity.ok(authService.register(usernameAndPasswordDTO));
     }
 
     @PostMapping("login")
-    public ResponseEntity<TokenResponse> login(@RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) throws AuthServiceException, AuthConnectionException, UserServiceFailedInputException {
         return ResponseEntity.ok(authService.login(usernameAndPasswordDTO));
     }
 
-    @GetMapping("refreshToken")
-    public ResponseEntity<TokenResponse> refreshToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
+    @PostMapping("refreshToken")
+    public ResponseEntity<TokenResponse> refreshToken(@Valid @RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
         return ResponseEntity.ok(authService.refreshToken(tokenRequest));
     }
 
     @PostMapping("verifyToken")
-    public ResponseEntity<UserServiceResponse> verifyToken(@RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
+    public ResponseEntity<UserServiceResponse> verifyToken(@Valid @RequestBody TokenRequest tokenRequest) throws AuthServiceException, AuthTokenInvalidException, AuthConnectionException, UserServiceFailedInputException {
         UserServiceResponse userServiceResponse = authService.verifyToken(tokenRequest);
         return ResponseEntity.ok(userServiceResponse);
     }

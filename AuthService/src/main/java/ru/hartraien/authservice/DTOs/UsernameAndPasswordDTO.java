@@ -1,7 +1,15 @@
 package ru.hartraien.authservice.DTOs;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class UsernameAndPasswordDTO {
+
+    @NotNull
+    @NotBlank
     String username;
+    @NotNull
+    @NotBlank
     String password;
 
     public String getUsername() {
