@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 public class PetTypesList {
     private List<String> types;
 
+    public PetTypesList() {
+    }
+
     public PetTypesList(List<PetType> allTypes) {
         types = allTypes.stream().map(PetType::getTypeName).collect(Collectors.toList());
     }

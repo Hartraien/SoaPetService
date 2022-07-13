@@ -28,13 +28,15 @@ public class PetController {
     public ResponseEntity<PetInfoList> getAllPets(@RequestHeader("id") Long userId) {
         List<Pet> allUsersPets = petService.findAllPetsByOwnerId(userId);
         PetInfoList petInfoList = new PetInfoList();
-        petInfoList.setPets(allUsersPets.stream().map(pet -> new PetInfo(pet.getId(), pet.getName())).collect(Collectors.toList()));
+        petInfoList.setPets(allUsersPets.stream()
+                .map(pet -> new PetInfo(pet.getId(), pet.getName()))
+                .collect(Collectors.toList()));
         return ResponseEntity.ok(petInfoList);
     }
 
     @GetMapping("/{pet_id}")
     public ResponseEntity<PetFullInfo> getFullPetInfo(@RequestHeader("id") Long userId
-            , @PathVariable("pet_id") @Min(value = 1, message = "Only positive ids are allowed") Long petId) throws PetServiceException {
+            , @PathVariable("pet_id") @Min(value = 1, message = "Only positive pet ids are allowed") Long petId) throws PetServiceException {
         Pet pet = petService.getPetInfo(petId, userId);
         PetFullInfo petFullInfo = new PetFullInfo(pet);
         return ResponseEntity.ok(petFullInfo);

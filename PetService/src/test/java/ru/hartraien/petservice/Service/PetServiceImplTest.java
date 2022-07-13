@@ -55,7 +55,7 @@ class PetServiceImplTest {
     }
 
     private void fillPets(List<Pet> pets, Long ownerId) {
-        int count = ThreadLocalRandom.current().nextInt();
+        int count = ThreadLocalRandom.current().nextInt(1,10);
         for (int i = 0; i < count; i++) {
             pets.add(generatePet(i + 1, ownerId));
         }
